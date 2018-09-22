@@ -1,0 +1,14 @@
+/Users/jake.tw/Documents/MyCode/MasterCardServer/bin/Release/netcoreapp2.1/MasterCardServer.deps.json
+/Users/jake.tw/Documents/MyCode/MasterCardServer/bin/Release/netcoreapp2.1/MasterCardServer.runtimeconfig.json
+/Users/jake.tw/Documents/MyCode/MasterCardServer/bin/Release/netcoreapp2.1/MasterCardServer.runtimeconfig.dev.json
+/Users/jake.tw/Documents/MyCode/MasterCardServer/bin/Release/netcoreapp2.1/MasterCardServer.dll
+/Users/jake.tw/Documents/MyCode/MasterCardServer/bin/Release/netcoreapp2.1/MasterCardServer.pdb
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.csprojAssemblyReference.cache
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.csproj.CoreCompileInputs.cache
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.RazorAssemblyInfo.cache
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.RazorAssemblyInfo.cs
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.AssemblyInfoInputs.cache
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.AssemblyInfo.cs
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.RazorTargetAssemblyInfo.cache
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.dll
+/Users/jake.tw/Documents/MyCode/MasterCardServer/obj/Release/netcoreapp2.1/MasterCardServer.pdb

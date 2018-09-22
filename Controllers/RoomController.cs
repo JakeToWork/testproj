@@ -57,7 +57,7 @@ namespace MasterCardServer.Controllers
           
         }
         [HttpPut]
-        public async Task<ActionResult> JoinRoom([FromBody] Player player)
+        public async Task<ActionResult<string>> JoinRoom([FromBody] Player player)
         { 
             using(var context = getDb()){  
                 var room = context.Rooms.Where(x=>x.roomID == player.roomID);
