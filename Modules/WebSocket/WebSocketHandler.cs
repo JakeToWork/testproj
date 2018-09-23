@@ -36,11 +36,15 @@ namespace MasterCardServer
                 var room = context.Rooms.Where(x=>x.SocketID==socketId);
                 if(room.Any())
                 { 
-                     context.Rooms.RemoveRange(room); 
+                     context.Rooms.RemoveRange(room);
                 } 
                 var sockid = context.Players.Where(x=>x.SockID==socketId);
                 if(sockid.Any())
                 {
+                    var players= context.Players.Where(x=>x.roomID == sockid.Single().roomID && x.SockID!=socketId); 
+                    foreach(var p in players){
+                        await SendMessageAsync(p.SockID, "[System]Player Leaves");
+                    } 
                     context.Players.RemoveRange(sockid);
                 } 
                 await context.SaveChangesAsync();
@@ -50,9 +54,8 @@ namespace MasterCardServer
         public async Task SendMessageAsync(WebSocket socket, string message)
         {
             if(socket.State != WebSocketState.Open)
-                return;
-
-            await socket.SendAsync(buffer: new ArraySegment<byte>(array: Encoding.ASCII.GetBytes(message),
+                return; 
+            await socket.SendAsync(buffer: new ArraySegment<byte>(array: Encoding.UTF8.GetBytes(message),
                                                                   offset: 0, 
                                                                   count: message.Length),
                                    messageType: WebSocketMessageType.Text,

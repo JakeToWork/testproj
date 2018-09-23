@@ -56,26 +56,35 @@ namespace MasterCardServer.Controllers
             }
           
         }
+        
         [HttpPut]
         public async Task<ActionResult<string>> JoinRoom([FromBody] Player player)
         { 
             using(var context = getDb()){  
-                var room = context.Rooms.Where(x=>x.roomID == player.roomID);
-                if(!room.Any()){
-                         return NotFound();
+                if(player.roomID == 0){
+                    var p = context.Players.Where(x=>x.SockID == player.SockID);
+                    var rid = context.Rooms.Where(x=>x.roomID == p.Single().roomID);
+                    rid.Single().roomMembers --;
+                    p.Single().roomID = 0;  
+                    await context.SaveChangesAsync(); 
+                    return Ok();
                 }else{
-                    var theroom = room.First();
-                    if(theroom.roomMembers>=2){
-                        return NotFound();
-                    }else{ 
-                        context.Players.Where(x=>x.SockID == player.SockID).Single().roomID = player.roomID; 
-                        theroom.roomMembers = 2;
-                        
-                        await context.SaveChangesAsync();
-                        
-                        return Ok();
+                    var room = context.Rooms.Where(x=>x.roomID == player.roomID);
+                    if(!room.Any()){
+                             return NotFound();
+                    }else{
+                        var theroom = room.First();
+                        if(theroom.roomMembers>=2){
+                            return NotFound();
+                        }else{ 
+                            context.Players.Where(x=>x.SockID == player.SockID).Single().roomID = player.roomID; 
+                            theroom.roomMembers = 2; 
+                            await context.SaveChangesAsync(); 
+                            return Ok();
+                        }
                     }
                 }
+                
             }
           
         }
@@ -85,9 +94,14 @@ namespace MasterCardServer.Controllers
         {
             using(var context = getDb()){
                 var room = context.Rooms.Where(x=>x.SocketID==socketId);
-                if(room.Any())
+                if(room.Any()){
+                    var player = context.Players.Where(x=>x.roomID == room.Single().roomID);
+                    foreach(var item in player){
+                        item.roomID = 0;
+                        item.roomID = 0;
+                    }
                     context.Rooms.Remove(room.Single());
-
+                }
                 await context.SaveChangesAsync();
                 return Ok();
             }
