@@ -23,8 +23,19 @@ namespace MasterCardServer
             var socketId = WebSocketConnectionManager.GetId(socket);
             var message =  Encoding.UTF8.GetString(buffer, 0, result.Count) ;
             var msg = JsonConvert.DeserializeObject<Message>(message);
-            var tosock = WebSocketConnectionManager.GetSocketById(socketId);
-            if(tosock.State != WebSocketState.Connecting){
+            var tosock = WebSocketConnectionManager.GetSocketById(msg.toSockID);
+            if(tosock is null){
+                var systemmessage = new Message
+                {
+                    fromSockID = msg.fromSockID,
+                    toSockID = msg.toSockID,
+                    messageType = Message.type.server,
+                    message = "Target is not Online"
+                };
+                string msgstr = JsonConvert.SerializeObject(systemmessage);
+                await SendMessageAsync(socketId, msgstr); 
+            }
+            else if(tosock.State != WebSocketState.Connecting &&  tosock.State != WebSocketState.Open){
                 var systemmessage = new Message
                 {
                     fromSockID = msg.fromSockID,
@@ -34,17 +45,25 @@ namespace MasterCardServer
                 };
                 using (var context = Methods.getDb())
                 { 
-                    var room = context.Rooms.Where(x=>x.SocketID==socketId);
+                    var room = context.Rooms.Where(x=>x.SocketID==msg.toSockID);
                     if(room.Any())
                     { 
                          context.Rooms.RemoveRange(room);
                     } 
-                    var sockid = context.Players.Where(x=>x.SockID==socketId);
+                    var sockid = context.Players.Where(x=>x.SockID==msg.toSockID);
                     if(sockid.Any())
                     {
-                        var players= context.Players.Where(x=>x.roomID == sockid.Single().roomID && x.SockID!=socketId); 
+                        var players= context.Players.Where(x=>x.roomID == sockid.Single().roomID && x.SockID!=msg.toSockID); 
                         foreach(var p in players){
-                            await SendMessageAsync(p.SockID, "[System]Player Leaves");
+                             Message mesg = new Message
+                            {
+                                fromSockID = "",
+                                toSockID = p.SockID,
+                                messageType = Message.type.server,
+                                message = string.Format("Player [{0}] has disconnected",sockid.Single().playerName)
+                            };
+                            string msgstr = JsonConvert.SerializeObject(mesg);
+                            await SendMessageAsync(p.SockID, msgstr); 
                         } 
                         context.Players.RemoveRange(sockid);
                     } 

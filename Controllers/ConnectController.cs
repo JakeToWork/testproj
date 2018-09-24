@@ -25,4 +25,20 @@ namespace MasterCardServer.Controllers{
               }
         }
     }
+
+
+    [Route("[controller]")]    
+    [ApiController]
+    public class MessageController : ControllerBase
+    {
+        [HttpGet]
+        public Message Get(){
+            return new Message
+            {
+              fromSockID = "From",
+              toSockID = "To",
+              messageType = Message.type.player  
+            };
+        } 
+    }
 }

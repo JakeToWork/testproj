@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using static MasterCardServer.Methods;
 namespace MasterCardServer
 {
@@ -41,10 +42,22 @@ namespace MasterCardServer
                 var sockid = context.Players.Where(x=>x.SockID==socketId);
                 if(sockid.Any())
                 {
-                    var players= context.Players.Where(x=>x.roomID == sockid.Single().roomID && x.SockID!=socketId); 
-                    foreach(var p in players){
-                        await SendMessageAsync(p.SockID, "[System]Player Leaves");
-                    } 
+                    var roomID = sockid.Single().roomID;
+                    if(roomID != 0){ 
+                        var players= context.Players.Where(x=>x.roomID == roomID && x.SockID!=socketId); 
+                       
+                        foreach(var p in players){
+                            Message msg = new Message
+                            {
+                                fromSockID = "",
+                                toSockID = p.SockID,
+                                messageType = Message.type.server,
+                                message = string.Format("Player [{0}] has disconnected",sockid.Single().playerName)
+                            };
+                            string msgstr = JsonConvert.SerializeObject(msg);
+                            await SendMessageAsync(p.SockID, msgstr);
+                        } 
+                    }
                     context.Players.RemoveRange(sockid);
                 } 
                 await context.SaveChangesAsync();
